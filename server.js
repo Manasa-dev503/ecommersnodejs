@@ -48,7 +48,7 @@ app.get("/addtocart/:id", function (req, res) {
 
 app.get("/cart", function (req, res) {
     Cart.find().then(function (cart) {
-        console.log(cart)
+       // console.log(cart)
         //console.log(cart.length)
         res.render('cart', { Cart: cart })
     })
@@ -59,7 +59,7 @@ app.get("/inc/:id", function (req, res) {
     Cart.find({ _id: req.params.id }).then(function (increcount) {
         var cartcopy = JSON.parse(JSON.stringify(increcount[0]));
         Cart.updateOne({ _id: req.params.id }, { $set: { count: cartcopy.count + 1 } }).then(function(res){
-            console.log(res);
+           // console.log(res);
         })        
         res.redirect("/cart");
 
@@ -71,7 +71,7 @@ app.get("/dec/:id",function(req,res){
         //console.log(decrecount[0])
         var cartcopy = JSON.parse(JSON.stringify(decrecount[0]))
         Cart.updateOne({_id:req.params.id},{$set:{count:cartcopy.count-1}}).then(function(res){
-            console.log(res)
+           // console.log(res)
         })
         res.redirect("/cart")
     })
@@ -80,18 +80,38 @@ app.get("/dec/:id",function(req,res){
 app.get("/remove/:id",function(req,res){
     Cart.find({_id:req.params.id}).then(function(remove){
         Cart.deleteOne({_id:req.params.id}).then(function(res){
-            console.log(res)
+          //  console.log(res)
         })
         res.redirect("/cart")
     })
 })
      
-
 app.get("/home",function(req,res){
     res.redirect("/")
 })
-       
 
+app.get("/default",function(req,res){
+    res.redirect("/")
+})
+
+app.get("/sortbypriceasc",function(req,res){
+   Product.find().sort({price:1}).then(function(data){
+    Cart.find().then(function(cartitems){
+        res.render("ascproducts",{data:data,cart:cartitems})
+
+    })
+})
+})
+
+app.get("/sortbypricedec",function(req,res){
+    Product.find().sort({price:-1}).then(function(data){
+       // console.log(data)
+        Cart.find().then(function(cartitems){
+            res.render("decproducts",{data:data,cart:cartitems})
+        })
+    })
+})
+    
 
 
 
